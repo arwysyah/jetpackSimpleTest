@@ -1,6 +1,7 @@
 package com.example.androidcomposelesson
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,10 +25,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.androidcomposelesson.ui.theme.AndroidComposeLessonTheme
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private val TAG = "Main Activity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        GlobalScope.launch {
+            delay(3000L)//delay 3 second but not block
+            Log.d(TAG,"Here is Coroutine ${Thread.currentThread().name}")
+            val networkCall1 = doNetworkCall()
+            val networkCall2 = doNetworkCall2()
+            Log.d(TAG, networkCall1)
+            Log.d(TAG, networkCall2)
+        }
+        Log.d(TAG,"Here is outside Coroutine ${Thread.currentThread().name}") //will run first\
+
         setContent {
             AndroidComposeLessonTheme {
                 // A surface container using the 'background' color from the theme
@@ -55,6 +70,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    suspend fun doNetworkCall():String{
+        delay(3000L)
+        return "here this is an answer"
+    }
+    suspend fun doNetworkCall2():String{
+        delay(3000L)
+        return "here this is an answer2"
     }
 }
 
